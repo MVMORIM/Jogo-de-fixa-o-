@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Correspondência · Termos de TI</title>
+  <style>
+    /* ----- RESET & GLOBAL ----- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --green: #58cc02;
+      --green-dark: #46a302;
+      --green-light: #89e219;
+      --blue: #1cb0f6;
+      --purple: #ce82ff;
+      --orange: #ff9600;
+      --red: #ff4b4b;
+      --gold: #ffc800;
+      --pink: #ff86d0;
+      --bg: #131f24;
+      --bg-dark: #0f191d;
+      --bg-card: #1a2b32;
+      --bg-hover: #223840;
+      --border: #2d4750;
+      --text: #f1f7fb;
+      --text-dim: #8ba6b0;
+      --text-mute: #5a7580;
+      --r: 16px;
+      --r-sm: 12px;
+      --font-main: 'Nunito', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-main);
+      font-weight: 700;
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: inherit;
+    }
+
+    /* ----- APP WRAPPER ----- */
+    .app {
+      max-width: 640px;
+      margin: 0 auto;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ----- COMPACT HEADER ----- */
+    .overlay-bar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: var(--bg-dark);
+      border-bottom: 2px solid var(--border);
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .overlay-bar .g-title {
+      font-weight: 900;
+      font-size: 15px;
+      letter-spacing: -0.2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 1;
+    }
+
+    .overlay-bar .g-stat {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--gold);
+      flex-shrink: 0;
+      background: rgba(255, 200, 0, 0.08);
+      padding: 5px 12px;
+      border-radius: 999px;
+      border: 1.5px solid rgba(255, 200, 0, 0.3);
+      white-space: nowrap;
+    }
+
+    /* ----- MAIN BODY ----- */
+    .lesson-body {
+      flex: 1;
+      padding: 16px 12px 120px;
+      width: 100%;
+    }
+
+    /* ----- CATEGORY STRIP ----- */
+    .category-strip {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .gf-btn {
+      flex: 0 1 auto;
+      background: var(--bg-card);
+      border: 1.5px solid var(--border);
+      border-radius: 999px;
+      padding: 8px 14px;
+      color: var(--text-dim);
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+      transition: all 0.15s;
+      letter-spacing: 0.2px;
+    }
+
+    .gf-btn:hover {
+      border-color: var(--blue);
+      color: var(--text);
+      background: var(--bg-hover);
+    }
+
+    .gf-btn.on {
+      border-color: var(--green);
+      color: var(--green);
+      background: rgba(88, 204, 2, 0.1);
+      box-shadow: 0 0 0 1px var(--green);
+    }
+
+    /* ----- CURRENT CATEGORY INFO ----- */
+    .level-desc {
+      margin: 0 0 12px 0;
+      font-size: 13px;
+      color: var(--text-dim);
+      line-height: 1.5;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .level-desc b {
+      color: var(--green);
+    }
+
+    /* ----- MODE GRID (2 columns) ----- */
+    .corr-menu {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 0 0 16px 0;
+    }
+
+    .corr-mode {
+      background: var(--bg-card);
+      border: 2px solid var(--border);
+      border-bottom: 4px solid var(--border);
+      border-radius: var(--r-sm);
+      padding: 14px 12px;
+      text-align: left;
+      color: var(--text);
+      transition: all 0.15s;
+      display: flex;
+      flex-direction: column;
+      min-height: 105px;
+    }
+
+    .corr-mode:hover {
+      border-color: var(--green);
+      background: var(--bg-hover);
+      transform: translateY(-2px);
+    }
+
+    .corr-mode:active {
+      transform: translateY(1px);
+      border-bottom-width: 2px;
+    }
+
+    .corr-mode .cm-ico {
+      font-size: 24px;
+      display: block;
+      margin-bottom: 4px;
+      line-height: 1.2;
+    }
+
+    .corr-mode .cm-name {
+      font-size: 15px;
+      font-weight: 900;
+      display: block;
+      letter-spacing: -0.2px;
+      margin-bottom: 2px;
+    }
+
+    .corr-mode .cm-desc {
+      font-size: 11px;
+      color: var(--text-dim);
+      font-weight: 700;
+      display: block;
+      line-height: 1.3;
+      margin-top: auto;
+    }
+
+    /* ----- GAME HUD (in-game stats) ----- */
+    .corr-hud {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .corr-hud .ch-item {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 800;
+      font-family: 'Courier New', monospace;
+    }
+
+    .corr-hud .ch-item.warn {
+      border-color: var(--red);
+      color: var(--red);
+      animation: pulse 0.8s infinite;
+    }
+
+    .corr-hud .ch-item.combo {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    /* ----- MATCHING GRID (in-game) ----- */
+    .corr-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .corr-col {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .corr-card {
+      background: var(--bg-card);
+      border: 2px solid var(--border);
+      border-bottom: 4px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 10px;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text);
+      text-align: left;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      line-height: 1.3;
+      transition: all 0.12s;
+      word-break: break-word;
+      width: 100%;
+    }
+
+    .corr-card:hover:not(.done):not(.sel) {
+      border-color: var(--blue);
+      background: var(--bg-hover);
+    }
+
+    .corr-card.sel {
+      border-color: var(--blue);
+      background: rgba(28, 176, 246, 0.15);
+      transform: scale(1.02);
+    }
+
+    .corr-card.done {
+      opacity: 0.25;
+      pointer-events: none;
+      border-color: var(--green);
+    }
+
+    .corr-card.bad {
+      animation: gshake 0.4s;
+      border-color: var(--red);
+    }
+
+    .corr-card.flash {
+      animation: flashGreen 0.5s;
+    }
+
+    /* ----- REVIEW BOX ----- */
+    .corr-review {
+      background: var(--bg-card);
+      border: 2px solid var(--red);
+      border-radius: var(--r-sm);
+      padding: 14px;
+      margin-bottom: 16px;
+      text-align: left;
+    }
+
+    .corr-review h4 {
+      font-size: 12px;
+      color: var(--red);
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .corr-review .rv {
+      font-size: 12px;
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+
+    .corr-review .rv b { color: var(--gold); }
+    .corr-review .rv span { color: var(--text-dim); }
+
+    /* ----- RESULT SCREEN ----- */
+    .result {
+      text-align: center;
+      padding: 20px 10px;
+      animation: fadeUp 0.4s ease;
+    }
+
+    .result-emoji {
+      font-size: 80px;
+      margin-bottom: 8px;
+      display: inline-block;
+      animation: pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .result-title {
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+    }
+
+    .result-title.win { color: var(--gold); }
+
+    .result-sub {
+      font-size: 14px;
+      color: var(--text-dim);
+      margin-bottom: 20px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .result-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 340px;
+      margin: 0 auto;
+    }
+
+    /* ----- BUTTONS ----- */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 20px;
+      border-radius: var(--r-sm);
+      font-size: 15px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #fff;
+      border-bottom: 4px solid rgba(0, 0, 0, 0.25);
+      transition: all 0.1s;
+      user-select: none;
+      width: 100%;
+    }
+
+    .btn:active:not(:disabled) {
+      transform: translateY(2px);
+      border-bottom-width: 2px;
+    }
+
+    .btn-green { background: var(--green); }
+    .btn-green:hover:not(:disabled) { background: var(--green-light); }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--blue);
+      border: 2px solid var(--border);
+      border-bottom-width: 4px;
+    }
+    .btn-outline:hover:not(:disabled) { background: rgba(28, 176, 246, 0.08); }
+    .btn-block { width: 100%; }
+
+    /* ----- TOAST ----- */
+    .toast {
+      position: fixed;
+      top: 70px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-140px);
+      background: var(--bg-card);
+      border: 2px solid var(--green);
+      border-radius: var(--r-sm);
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--green);
+      z-index: 2000;
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ----- ANIMATIONS ----- */
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.05); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pop {
+      0% { transform: scale(0.6); }
+      60% { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+    @keyframes gshake {
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+    @keyframes flashGreen {
+      0%, 100% { background: var(--bg-card); }
+      50% { background: rgba(88, 204, 2, 0.4); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; }
+    }
+
+    /* ----- AJUSTES PARA TELAS PEQUENAS (CELULAR) ----- */
+    @media (max-width: 400px) {
+      .overlay-bar .g-title { font-size: 13px; }
+      .overlay-bar .g-stat { font-size: 11px; padding: 4px 8px; }
+      .gf-btn { padding: 6px 10px; font-size: 11px; }
+      .corr-mode { padding: 12px 8px; min-height: 95px; }
+      .corr-mode .cm-name { font-size: 14px; }
+      .corr-mode .cm-desc { font-size: 10px; }
+      .corr-card { font-size: 12px; padding: 10px 8px; min-height: 54px; }
+      .result-title { font-size: 24px; }
+      .result-emoji { font-size: 64px; }
+      .btn { font-size: 14px; padding: 12px 16px; }
+    }
+
+    button:focus-visible {
+      outline: 2px solid var(--blue);
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- HEADER -->
+    <div class="overlay-bar">
+      <div class="g-title" id="gTitle">Correspondência</div>
+      <div class="g-stat" id="gStat">⭐ Nv 1 · 0/100 XP</div>
+    </div>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <div class="lesson-body" id="gBody"></div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ============================================================
+    // BANCO DE DADOS (Termos de TI + Diagnósticos do PDF)
+    // ============================================================
+    const CORR_BANCO = {
+      'Hardware': [
+        ['RAM','Memória rápida e temporária, apagada ao desligar'],
+        ['ROM','Memória só de leitura que guarda o firmware'],
+        ['SSD','Armazenamento veloz sem partes móveis'],
+        ['HD','Disco com prato giratório e cabeça de leitura'],
+        ['Fonte','Converte a energia da tomada para as peças'],
+        ['BIOS','Firmware que inicia o hardware no boot'],
+        ['UEFI','Substituto moderno da BIOS, com Secure Boot'],
+        ['Driver','Programa que ensina o sistema a usar um hardware'],
+        ['Cooler','Ventoinha que resfria o processador'],
+        ['Placa-mãe','Placa que conecta todos os componentes'],
+        ['Chipset','Controla a comunicação entre as peças da placa'],
+        ['CPU','Unidade central de processamento, o cérebro'],
+        ['GPU','Processa gráficos e imagens'],
+        ['Pendrive','Memória portátil ligada na porta USB'],
+        ['Pasta térmica','Melhora a troca de calor entre CPU e dissipador'],
+        ['POST','Autoteste que o PC faz ao ligar'],
+        ['SATA','Interface de conexão de HDs e SSDs'],
+        ['NVMe','Protocolo veloz de SSD via PCIe'],
+        ['TDP','Potência térmica que o processador dissipa'],
+        ['Overclock','Aumentar a frequência além do padrão de fábrica'],
+        ['Cabo flat','Cabo flexível usado dentro de notebooks'],
+        ['DC Jack','Conector de energia do notebook'],
+        ['Dissipador','Peça de metal que espalha o calor do CPU'],
+        ['Beep do POST','Sinal sonoro que indica falha no boot']
+      ],
+      'Redes': [
+        ['Roteador','Liga redes diferentes e distribui IPs'],
+        ['Switch','Liga computadores na mesma rede local'],
+        ['Hub','Repete o sinal para todas as portas'],
+        ['Modem','Converte o sinal da operadora em dados'],
+        ['Access Point','Distribui Wi-Fi a partir de uma rede cabeada'],
+        ['Firewall','Filtra o tráfego que entra e sai da rede'],
+        ['Gateway','Porta de saída de uma rede para outra'],
+        ['DHCP','Entrega IP automático aos dispositivos'],
+        ['DNS','Traduz nomes de sites em endereços IP'],
+        ['Ethernet','Padrão de rede cabeada'],
+        ['Crimpar','Prender o conector RJ45 ao cabo'],
+        ['Patch panel','Painel que organiza os cabos do rack'],
+        ['LAN','Rede local de curta distância'],
+        ['WAN','Rede de longa distância, como a internet'],
+        ['VPN','Túnel criptografado sobre a internet'],
+        ['NAT','Traduz IPs privados em um IP público'],
+        ['Proxy','Intermediário entre o usuário e a internet'],
+        ['SNMP','Protocolo de monitoramento de rede'],
+        ['QoS','Prioriza tráfego importante, como voz'],
+        ['PoE','Energia elétrica pelo próprio cabo de rede'],
+        ['RJ45','Conector do cabo de rede'],
+        ['Cat6','Categoria de cabo para até 10 Gbps'],
+        ['Ping','Testa conectividade e mede o tempo de resposta'],
+        ['Tracert','Mostra o caminho até o destino'],
+        ['Ipconfig','Mostra a configuração de rede no Windows'],
+        ['Nslookup','Consulta servidores DNS'],
+        ['T568B','Padrão de crimpagem mais comum'],
+        ['SSID','Nome da rede Wi-Fi'],
+        ['WPA3','Padrão de segurança Wi-Fi mais recente'],
+        ['WEP','Padrão de segurança Wi-Fi obsoleto']
+      ],
+      'Segurança': [
+        ['Backup','Cópia de segurança dos dados'],
+        ['Phishing','Golpe que imita sites ou e-mails verdadeiros'],
+        ['Ransomware','Criptografa os dados e pede resgate'],
+        ['Worm','Malware que se propaga sozinho pela rede'],
+        ['Trojan','Malware disfarçado de programa legítimo'],
+        ['Spyware','Espiona a atividade do usuário'],
+        ['Adware','Mostra anúncios indesejados'],
+        ['Antivírus','Detecta e remove programas maliciosos'],
+        ['Senha','Segredo que protege uma conta'],
+        ['2FA','Segundo fator além da senha'],
+        ['HTTPS','Versão segura e criptografada do HTTP'],
+        ['Certificado digital','Documento eletrônico que confirma identidade'],
+        ['Criptografia','Transforma dado em algo ilegível sem a chave'],
+        ['Firewall pessoal','Bloqueia conexões indesejadas no PC'],
+        ['Engenharia social','Manipula pessoas para obter informação'],
+        ['Sandbox','Ambiente isolado para testar arquivos suspeitos'],
+        ['Regra 3-2-1','3 cópias, 2 mídias, 1 fora do local'],
+        ['BitLocker','Criptografa o disco do Windows'],
+        ['Backup incremental','Copia só o que mudou desde o último'],
+        ['Backup completo','Copia todos os dados sempre']
+      ],
+      'Office / Excel': [
+        ['Célula','Encontro de linha e coluna na planilha'],
+        ['Fórmula','Expressão que começa com = e calcula algo'],
+        ['PROCV','Busca um valor em uma coluna e retorna de outra'],
+        ['SOMASE','Soma apenas valores que atendem a um critério'],
+        ['Referência relativa','Muda ao arrastar a fórmula (A1)'],
+        ['Referência absoluta','Fixa a referência ao arrastar ($A$1)'],
+        ['MÉDIA','Calcula a média de um intervalo'],
+        ['Gráfico','Representação visual dos dados'],
+        ['Estilo','Conjunto de formatações do Word'],
+        ['Sumário','Índice automático gerado pelos títulos'],
+        ['Controle de alterações','Registra quem editou o documento'],
+        ['PDF','Formato universal que preserva a formatação'],
+        ['Slide','Página da apresentação'],
+        ['F5','Inicia a apresentação do PowerPoint'],
+        ['Ctrl+B','Atalho do negrito (Bold)'],
+        ['Ctrl+S','Atalho para salvar o documento'],
+        ['Ctrl+Z','Atalho para desfazer a última ação'],
+        ['Ctrl+P','Atalho para imprimir'],
+        ['Ctrl+C','Atalho para copiar'],
+        ['Ctrl+V','Atalho para colar'],
+        ['Ctrl+X','Atalho para recortar'],
+        ['Win+E','Atalho para o Explorador de Arquivos'],
+        ['Win+R','Atalho para abrir a caixa Executar'],
+        ['F2','Renomeia o arquivo selecionado'],
+        ['Shift+Delete','Exclui sem ir para a Lixeira']
+      ],
+      'Linux': [
+        ['ls','Lista arquivos e pastas'],
+        ['cd','Muda de diretório'],
+        ['pwd','Mostra o diretório atual'],
+        ['chmod','Altera permissões de arquivo'],
+        ['chown','Altera o dono de um arquivo'],
+        ['grep','Busca texto dentro de arquivos'],
+        ['ps','Lista processos em execução'],
+        ['apt','Gerenciador de pacotes do Debian/Ubuntu'],
+        ['sudo','Executa comando como administrador'],
+        ['systemctl','Gerencia serviços do sistema'],
+        ['ssh','Acesso remoto seguro a outro computador'],
+        ['Samba','Compartilha arquivos com Windows em Linux'],
+        ['Apache','Servidor web muito usado em Linux'],
+        ['Shell','Interpretador de comandos do Linux'],
+        ['Root','Usuário administrador do Linux'],
+        ['Kernel','Núcleo que faz a ponte entre hardware e software'],
+        ['Ubuntu','Distribuição Linux mais popular no desktop'],
+        ['Debian','Distribuição Linux estável e base do Ubuntu'],
+        ['Mint','Distribuição Linux amigável para quem vem do Windows'],
+        ['GPL','Licença livre mais usada no Linux']
+      ],
+      'Windows': [
+        ['Gerenciador de Tarefas','Mostra processos e consumo do sistema'],
+        ['Painel de Controle','Reúne configurações avançadas do Windows'],
+        ['Regedit','Editor do registro do Windows'],
+        ['msinfo32','Mostra informações completas do sistema'],
+        ['dxdiag','Diagnóstico de DirectX, vídeo e som'],
+        ['Executar','Caixa aberta com Win+R para rodar comandos'],
+        ['Explorador de Arquivos','Navega pelas pastas e arquivos'],
+        ['UAC','Pede confirmação antes de ações administrativas'],
+        ['Conta padrão','Usuário comum, sem poder de administrador'],
+        ['Conta administrador','Tem controle total do computador'],
+        ['Spooler','Fila que organiza os trabalhos de impressão'],
+        ['Visualizador de Eventos','Mostra logs de erros e avisos'],
+        ['BitLocker','Criptografa o disco do Windows'],
+        ['Defender','Antivírus nativo do Windows'],
+        ['Active Directory','Gerencia usuários e permissões em rede'],
+        ['DHCP Server','Serviço que entrega IPs na rede Windows'],
+        ['GPO','Política de grupo aplicada a usuários e PCs'],
+        ['PowerShell','Shell de comandos avançado do Windows'],
+        ['Prompt de Comando','Terminal clássico do Windows'],
+        ['Ctrl+Shift+Esc','Atalho direto do Gerenciador de Tarefas']
+      ],
+      'Conceitos': [
+        ['Hardware','Parte física do computador'],
+        ['Software','Programas e instruções'],
+        ['Sistema Operacional','Programa que gerencia o hardware e os aplicativos'],
+        ['Algoritmo','Sequência lógica de passos para resolver algo'],
+        ['Bit','Menor unidade de informação (0 ou 1)'],
+        ['Byte','Conjunto de 8 bits'],
+        ['Cloud Computing','Serviços acessados pela internet'],
+        ['Virtualização','Rodar vários sistemas em um só computador'],
+        ['Intranet','Rede interna da empresa'],
+        ['Extranet','Rede interna acessível a parceiros externos'],
+        ['Software livre','Pode ser usado, estudado e modificado'],
+        ['Software gratuito','Você não paga, mas não pode modificar'],
+        ['Open Source','Código-fonte aberto'],
+        ['Firmware','Software gravado no hardware'],
+        ['Bug','Erro no programa'],
+        ['Debug','Processo de encontrar e corrigir erros'],
+        ['Patch','Correção aplicada a um programa'],
+        ['Legacy','Sistema antigo ainda em uso'],
+        ['SLA','Acordo de nível de serviço'],
+        ['ITIL','Boas práticas de gestão de serviços de TI']
+      ],
+      'Programação': [
+        ['Variável','Espaço nomeado que guarda um valor durante a execução'],
+        ['Constante','Valor definido que não deve ser alterado pelo programa'],
+        ['Função','Bloco reutilizável que executa uma tarefa'],
+        ['Parâmetro','Dado recebido por uma função para orientar sua execução'],
+        ['Array','Estrutura que armazena uma coleção ordenada de valores'],
+        ['Objeto','Estrutura que reúne dados e comportamentos relacionados'],
+        ['Loop','Estrutura que repete instruções enquanto uma condição permitir'],
+        ['Condicional','Estrutura que escolhe caminhos conforme uma condição'],
+        ['API','Interface que permite sistemas trocarem dados e serviços'],
+        ['JSON','Formato textual para representar dados estruturados'],
+        ['HTML','Linguagem de marcação que estrutura páginas web'],
+        ['CSS','Linguagem que define a apresentação visual de páginas'],
+        ['JavaScript','Linguagem usada para criar interatividade na web'],
+        ['Git','Sistema de controle de versões de arquivos'],
+        ['Repositório','Local que guarda arquivos e histórico de versões'],
+        ['Commit','Registro de um conjunto de alterações no Git'],
+        ['Debugging','Investigação para localizar e corrigir falhas'],
+        ['IDE','Ambiente integrado para escrever, executar e depurar código']
+      ],
+      'Diagnósticos': [
+        ['Não liga e não emite sinal', 'Fonte sem saída, cabo/tomada sem energia ou curto no gabinete'],
+        ['Liga mas sem imagem no monitor', 'RAM mal encaixada ou cabo/entrada de vídeo errada'],
+        ['Tela azul após iniciar', 'Driver incompatível, RAM instável ou arquivos corrompidos'],
+        ['Reinicia sozinho sob carga', 'Superaquecimento (pasta seca), fonte fraca ou RAM instável'],
+        ['Extremamente lento em tarefas simples', 'Disco com setores defeituosos, 100% de uso ou pouca RAM'],
+        ['Emite beeps no POST e não inicia', 'Memória RAM mal encaixada ou pente defeituoso'],
+        ['SSD não aparece na BIOS', 'M.2 mal encaixado, slot compartilhado ou BIOS sem suporte'],
+        ['Desliga sozinho após minutos', 'Superaquecimento (dissipador solto) ou proteção térmica da fonte'],
+        ['Erro de boot (disco não encontrado)', 'Ordem de boot errada, setor de inicialização corrompido ou disco falhando'],
+        ['Não reproduz nenhum som', 'Saída padrão errada, driver ausente ou cabo na entrada incorreta'],
+        ['Sem acesso à rede por cabo', 'Cabo rompido, porta do roteador inativa ou IP 169.254 (DHCP)'],
+        ['Portas USB não reconhecem', 'Controlador travado, excesso de consumo (hub) ou portas desativadas na BIOS'],
+        ['Perde data e hora ao desligar', 'Bateria CMOS (CR2032) descarregada ou jumper de limpeza'],
+        ['Dispositivo com alerta amarelo', 'Driver incorreto, instalação interrompida ou conflito'],
+        ['Trava e congela durante o uso', 'Superaquecimento, RAM com erro ou capacitores estufados'],
+        ['Fonte liga e desliga em ciclo', 'Proteção contra curto ativada ou conector EPS solto'],
+        ['Cheiro de queimado ao ligar', 'Fonte com componente queimado ou curto no cabo de alimentação'],
+        ['Fonte com ruído alto ou assobio', 'Rolamento da ventoinha gasto ou assobio de bobina'],
+        ['Liga sozinho ao conectar na tomada', 'Retorno de energia ativado na BIOS ou botão do painel preso'],
+        ['Fonte não sustenta sob carga', 'Potência insuficiente para o pico ou cabo PCIe em daisy chain'],
+        ['Notebook não liga sem bateria', 'Bateria no fim da vida ou circuito de carga com falha'],
+        ['Led da placa acende, nada acontece', 'Conector EPS de 8 pinos ausente ou botão do painel sem contato'],
+        ['Não liga após limpeza/remontagem', 'Painel frontal em pinos errados, EPS solto ou espaçador a mais'],
+        ['Só liga fora do gabinete', 'Curto contra o chassi (espaçador metálico ou parafuso tocando trilha)'],
+        ['Sem vídeo após instalar placa dedicada', 'Cabo na saída errada, falta de alimentação PCIe ou slot sujo'],
+        ['Imagem só aparece após vários minutos', 'Capacitores da fonte/monitor desgastados ou solda fria'],
+        ['Monitor pisca e perde o sinal', 'Cabo de vídeo com mau contato ou driver instável'],
+        ['Imagem com faixas e quadrados', 'Memória de vídeo (VRAM) defeituosa ou superaquecimento da GPU'],
+        ['Vídeo integrado parou de funcionar', 'Desativado na BIOS, processador sem vídeo ou pino torto'],
+        ['Reinicia ao abrir jogos', 'Fonte sem potência para o pico, superaquecimento ou XMP instável'],
+        ['Reinicia ao conectar dispositivo USB', 'Curto na porta USB, fonte sem margem ou cabo do painel invertido'],
+        ['Reinicia em ciclo antes do sistema', 'RAM com mau contato, fonte fora do padrão ou curto na placa'],
+        ['Reinicia após atualização do sistema', 'Driver antigo em conflito ou atualização incompleta'],
+        ['Reinicia ao acessar o disco', 'Setores defeituosos ou fonte não sustentando o pico do disco'],
+        ['Desliga ao mover o gabinete', 'Botão do painel com curto, conector ATX solto ou solda fria'],
+        ['Desliga apenas ao rodar jogos', 'Placa de vídeo ou processador superaquecendo sob carga'],
+        ['Desliga e só volta depois de minutos', 'Proteção térmica da fonte ou fonte no limite da potência'],
+        ['Notebook desliga com bateria pela metade', 'Células da bateria gastas ou leitura de carga descalibrada'],
+        ['Desliga ao conectar impressora/periférico', 'Curto no cabo USB do periférico ou fonte do periférico com fuga'],
+        ['Tela azul com erro de memória', 'Pente com defeito, XMP instável ou contatos sujos'],
+        ['Tela azul ao usar placa de vídeo', 'Driver corrompido, superaquecimento ou fonte sem folga'],
+        ['Tela azul aleatória sem padrão', 'Driver de terceiros com falha ou RAM instável'],
+        ['Tela azul após instalar programa', 'Driver junto com o programa ou conflito de antivírus'],
+        ['Tela azul ao conectar USB', 'Driver do dispositivo com defeito ou curto no aparelho'],
+        ['Tela azul com erro de disco de boot', 'Setores defeituosos, cabo SATA com mau contato ou modo AHCI'],
+        ['Processador quente em repouso', 'Pasta térmica seca, cooler mal fixado ou sujeira nas aletas'],
+        ['Notebook esquenta e trava em minutos', 'Aletas obstruídas por poeira ou pasta térmica endurecida'],
+        ['Placa de vídeo esquenta e jogo engasga', 'Aletas com poeira, pasta da GPU vencida ou fluxo de ar ruim'],
+        ['Gabinete quente e ventoinhas no máximo', 'Filtros entupidos, falta de exaustão ou curva de rotação fixa'],
+        ['Disco aquecendo e perdendo desempenho', 'SSD M.2 sem dissipador ou excesso de leitura/gravação'],
+        ['Demora muito para abrir a área de trabalho', 'Muitos programas na inicialização, disco lento ou perfil corrompido'],
+        ['Lentidão com disco sempre em uso', 'Disco mecânico velho, setores realocados ou serviço de busca'],
+        ['Sistema reconhece menos memória', 'Pente mal encaixado, limite do sistema 32-bit ou reserva de vídeo'],
+        ['Instável depois de adicionar um pente', 'Pentes de modelos diferentes ou XMP forçando a frequência'],
+        ['Memória não roda na frequência anunciada', 'Perfil XMP desativado na BIOS ou placa limitando a frequência'],
+        ['Travamentos com erro apontando memória', 'Pente com célula defeituosa ou contatos oxidados'],
+        ['Placa não aceita a memória nova', 'Memória fora da lista suportada ou BIOS antiga sem suporte'],
+        ['Disco com clique rítmico', 'Cabeça de leitura travada (falha mecânica) - priorize backup'],
+        ['Disco sem letra no Explorador', 'Tabela de partições danificada ou disco não inicializado'],
+        ['SSD com desempenho abaixo do esperado', 'SSD quase cheio, cache esgotado ou slot M.2 de linha reduzida'],
+        ['Disco somente leitura e não grava', 'SSD em modo protegido por desgaste ou sistema de arquivos com erro'],
+        ['Unidade some do Explorador durante o uso', 'Cabo SATA frouxo, conector de energia solto ou suspensão do disco'],
+        ['SSD com capacidade errada no sistema', 'Partição menor que o disco ou unidade falsificada'],
+        ['Arquivo corrompido com erro de leitura', 'Setor defeituoso sob o arquivo ou desligamento durante gravação'],
+        ['Placa não reconhece dispositivos SATA', 'Portas desativadas na BIOS ou fonte sem 5V nos discos'],
+        ['Nenhum slot PCI Express responde', 'Contatos do slot sujos, cabos PCIe soltos ou chipset danificado'],
+        ['Trilha ou solda rompida na placa', 'Queda, cabo forçado ou espaçador raspando a placa'],
+        ['Placa oxidada após contato com líquido', 'Resíduo condutor na placa - requer limpeza com álcool isopropílico'],
+        ['Painel frontal do gabinete não responde', 'Conectores fora de ordem, pino torto ou botão travado'],
+        ['Liga, gira as ventoinhas e desliga', 'Cooler mal assentado, cabo de 8 pinos solto ou pasta seca'],
+        ['Processador com frequência errada', 'Limite térmico, plano de energia ou BIOS desatualizada'],
+        ['Desempenho travado na frequência mínima', 'Superaquecimento (redução térmica) ou perfil de energia em economia'],
+        ['Processador com pino torto no soquete', 'Pino torto no encaixe - exige reparo delicado com lupa'],
+        ['Placa não reconhece o processador novo', 'BIOS sem suporte ao modelo ou chipset incompatível'],
+        ['BIOS não salva a ordem de boot', 'Bateria CMOS descarregada ou jumper de limpeza errado'],
+        ['Placa não aceita atualização da BIOS', 'Arquivo errado, pendrive fora do padrão ou versão mais antiga'],
+        ['Inicia direto no setup da BIOS', 'Disco de boot não detectado ou tecla de setup presa'],
+        ['Secure Boot impede a instalação', 'Secure Boot ativo bloqueando mídia sem assinatura'],
+        ['BIOS não reconhece pendrive de boot', 'Pendrive gravado de forma errada (formato legado)'],
+        ['Placa de vídeo como dispositivo básico', 'Falha na instalação do driver - mostra vídeo genérico'],
+        ['Áudio parou depois de atualização', 'Atualização trocou o driver ou desativou a saída padrão'],
+        ['Driver volta sozinho para a versão antiga', 'Atualização automática do Windows repõe a versão antiga'],
+        ['Dispositivo funciona com desempenho reduzido', 'Driver genérico em uso ou aparelho em porta lenta'],
+        ['Rede some depois de suspender', 'Economia de energia desliga o adaptador ou driver antigo'],
+        ['Trava na tela de boas-vindas', 'Perfil de usuário corrompido ou serviço travado na inicialização'],
+        ['Reparo automático em ciclo', 'Arquivo de inicialização corrompido ou disco com setores ruins'],
+        ['Conta abre com perfil temporário', 'Perfil corrompido ou disco sem espaço livre'],
+        ['Atualização falha e reverte sempre', 'Pouco espaço livre ou arquivos de sistema danificados'],
+        ['Sistema pede ativação após troca de peça', 'Licença presa à placa antiga (necessário vincular à conta)'],
+        ['Ícones sumiram da área de trabalho', 'Exibição de ícones desligada ou perfil temporário'],
+        ['Sistema abre lento com erro de serviço', 'Serviço parado com atraso na inicialização'],
+        ['Teclado e mouse param após o POST', 'Driver do controlador USB com falha ou suspensão de porta'],
+        ['Impressora USB não é reconhecida', 'Cabo USB com defeito, driver ausente ou spooler travado'],
+        ['Porta USB frontal sem energia', 'Conector do painel solto na placa-mãe ou cabo rompido'],
+        ['Leitor não lê nenhum cartão', 'Contatos sujos no leitor ou cabo interno solto'],
+        ['Monitor externo não é detectado', 'Modo de projeção só na tela ou cabo de vídeo com defeito'],
+        ['Dispositivo Bluetooth não pareia', 'Aparelho fora do modo de pareamento ou antena solta'],
+        ['Som sai distorcido e com chiado', 'Mau contato no conector, volume alto ou interferência'],
+        ['Microfone não capta som', 'Acesso bloqueado na privacidade ou entrada padrão errada'],
+        ['Som só sai de um lado', 'Plugue mal encaixado ou fio rompido perto do conector'],
+        ['Áudio fica mudo ao tirar o fone', 'Saída padrão presa no fone (falha na detecção)'],
+        ['Som some ao ligar monitor por HDMI', 'HDMI assume a saída padrão - mude para as caixas'],
+        ['Wi-Fi conecta mas fica sem internet', 'DNS sem resposta ou IP inválido (DHCP)'],
+        ['Notebook não enxerga nenhuma rede Wi-Fi', 'Modo avião ligado ou driver sem fio ausente'],
+        ['Internet cai em horários aleatórios', 'Interferência no canal do Wi-Fi ou aquecimento do roteador'],
+        ['Velocidade de rede abaixo da contratada', 'Enlace negociado em 100 Mbps (cabo antigo)'],
+        ['Rede funciona no cabo mas não no Wi-Fi', 'Perfil de rede salvo com erro ou adaptador desabilitado'],
+        ['Computador não enxerga aparelhos da rede', 'Descoberta de rede desativada ou firewall bloqueando'],
+        ['Computador entra direto na BIOS', 'Disco de boot não detectado ou tecla de setup presa'],
+        ['Demora muito antes de mostrar o logotipo', 'Disco secundário demorando ou muitos USBs no boot'],
+        ['Pede escolher entre dois sistemas ao ligar', 'Entrada antiga no gerenciador de boot'],
+        ['Inicia pela rede em vez do disco', 'Ordem de boot com rede em primeiro lugar'],
+        ['Um beep longo e dois curtos', 'Falha de vídeo (placa de vídeo sem contato)'],
+        ['Beeps contínuos e sem parar', 'Fonte instável ou tecla travada no teclado'],
+        ['Placa mostra código de erro e trava', 'POST parado - consulte o manual da placa-mãe']
+      ]
+    };
+
+    const TODOS_TERMOS = Object.values(CORR_BANCO).flat();
+    const CATEGORIAS = ['Todos', ...Object.keys(CORR_BANCO)];
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      if (!t) return;
+      t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(t._t);
+      t._t = setTimeout(() => t.classList.remove('show'), 2800);
+    }
+
+    function xpForLevel(lvl) { return Math.floor(100 * Math.pow(1.4, lvl - 1)); }
+    const $g = id => document.getElementById(id);
+    const G = {};
+    let CAT_SEL = 'Todos';
+    const KEY = 'corresp_solo_v1';
+    const DEFAULT = { xp: 0, xpTotal: 0, level: 1, games: { corrRec: {}, stats: { corresp: 0 } } };
+    let state = JSON.parse(JSON.stringify(DEFAULT));
+
+    function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+    function load() {
+      try {
+        const r = localStorage.getItem(KEY);
+        if (r) {
+          const p = JSON.parse(r);
+          state = { ...state, ...p };
+          state.games = { ...DEFAULT.games, ...(p.games || {}) };
+          state.games.stats = { ...DEFAULT.games.stats, ...state.games.stats };
+        }
+      } catch (e) {}
+    }
+
+    function addXp(n) {
+      if (!Number.isFinite(n) || n < 0) return;
+      state.xp += n; state.xpTotal += n; let up = false, g = 0;
+      while (state.xp >= xpForLevel(state.level) && g++ < 1000) {
+        state.xp -= xpForLevel(state.level);
+        state.level++;
+        up = true;
+      }
+      if (up) showToast('🏆 Nível ' + state.level + '!');
+      save();
+    }
+
+    const CORR_MODOS = [
+      { id: 'classico', ico: '🎯', name: 'Clássico', desc: '6 pares · 3 vidas' },
+      { id: 'relampago', ico: '⚡', name: 'Relâmpago', desc: '10 pares · 60 segundos' },
+      { id: 'sobrevivencia', ico: '💀', name: 'Sobrevivência', desc: 'Vidas = 1 · infinito' },
+      { id: 'invertido', ico: '🔄', name: 'Invertido', desc: 'Definição → termo' },
+      { id: 'misto', ico: '🎲', name: 'Misto', desc: 'Metade termo, metade definição' },
+      { id: 'maratona', ico: '🏃', name: 'Maratona', desc: '20 pares · bônus alto' }
+    ];
+
+    function corrBanco() { return CAT_SEL === 'Todos' ? TODOS_TERMOS : (CORR_BANCO[CAT_SEL] || TODOS_TERMOS); }
+
+    function jCorresp() {
+      const banco = corrBanco();
+      const rec = state.games.corrRec || (state.games.corrRec = {});
+      $g('gTitle').textContent = 'Correspondência · ' + CAT_SEL;
+      $g('gStat').textContent = '⭐ Nv ' + state.level + ' · ' + state.xp + '/' + xpForLevel(state.level) + ' XP';
+
+      const catButtons = CATEGORIAS.map(c => `<button class="gf-btn${c === CAT_SEL ? ' on' : ''}" data-c="${c}">${c}</button>`).join('');
+      
+      const modeCards = CORR_MODOS.map(m => {
+        const recVal = rec[m.id];
+        return `<button class="corr-mode" data-m="${m.id}">
+          <span class="cm-ico">${m.ico}</span>
+          <span class="cm-name">${m.name}</span>
+          <span class="cm-desc">${m.desc}${recVal ? ' · 🏆 ' + recVal : ''}</span>
+        </button>`;
+      }).join('');
+
+      $g('gBody').innerHTML = `
+        <div class="category-strip">${catButtons}</div>
+        <p class="level-desc">Categoria: <b>${CAT_SEL}</b> (${banco.length} pares).</p>
+        <div class="corr-menu">${modeCards}</div>
+        <p class="level-desc">💡 Combo: acertos seguidos aumentam o XP. Errar zera o combo.</p>
+        <p class="level-desc">🏅 ${state.games.stats.corresp || 0} pares acertados no total</p>
+      `;
+
+      $g('gBody').querySelectorAll('.corr-mode').forEach(b => b.onclick = () => corrIniciar(b.dataset.m));
+      $g('gBody').querySelectorAll('.gf-btn').forEach(b => b.onclick = () => { CAT_SEL = b.dataset.c; jCorresp(); });
+    }
+
+    function corrIniciar(modo) {
+      const banco = corrBanco();
+      const cfg = {
+        classico: { pares: 6, vidas: 3, tempo: 0, inv: 0, misto: 0 },
+        relampago: { pares: 10, vidas: 3, tempo: 60, inv: 0, misto: 0 },
+        sobrevivencia: { pares: 8, vidas: 1, tempo: 0, inv: 0, misto: 0 },
+        invertido: { pares: 6, vidas: 3, tempo: 0, inv: 1, misto: 0 },
+        misto: { pares: 8, vidas: 3, tempo: 0, inv: 0, misto: 1 },
+        maratona: { pares: 20, vidas: 3, tempo: 0, inv: 0, misto: 0 }
+      }[modo];
+
+      const pares = shuffle(banco).slice(0, Math.min(cfg.pares, banco.length));
+      let vidas = cfg.vidas, tempo = cfg.tempo, combo = 0, maxCombo = 0, ok = 0, total = pares.length, selL = null, selR = null, erros = [], travado = false;
+      const startTempo = Date.now();
+      const invertidos = new Set();
+
+      if (cfg.inv) pares.forEach((_, i) => invertidos.add(i));
+      if (cfg.misto) {
+        const idx = shuffle(pares.map((_, i) => i)).slice(0, Math.ceil(pares.length / 2));
+        idx.forEach(i => invertidos.add(i));
+      }
+
+      const L = pares.map((p, i) => ({ i, txt: invertidos.has(i) ? p[1] : p[0] }));
+      const R = pares.map((p, i) => ({ i, txt: invertidos.has(i) ? p[0] : p[1] }));
+      shuffle(L); shuffle(R);
+
+      function renderHUD() {
+        const comboHtml = combo >= 2 ? `<div class="ch-item combo">🔥 x${combo}</div>` : '';
+        const tempoHtml = cfg.tempo ? `<div class="ch-item${tempo <= 10 ? ' warn' : ''}">⏱ ${tempo}s</div>` : '';
+        $g('gStat').innerHTML = `<span class="ch-item">${ok}/${total}</span>${comboHtml}${tempoHtml}<span class="ch-item">${'❤️'.repeat(vidas)}</span>`;
+      }
+
+      function render() {
+        renderHUD();
+        $g('gBody').innerHTML = `
+          <div class="corr-grid">
+            <div class="corr-col">${L.map(c => `<button class="corr-card${c.done ? ' done' : ''}" data-lado="L" data-i="${c.i}">${escapeHtml(c.txt)}</button>`).join('')}</div>
+            <div class="corr-col">${R.map(c => `<button class="corr-card${c.done ? ' done' : ''}" data-lado="R" data-i="${c.i}">${escapeHtml(c.txt)}</button>`).join('')}</div>
+          </div>
+          <p class="level-desc" style="margin-top:16px;text-align:center">Toque em um cartão de cada lado para ligar termo e definição.</p>
+        `;
+        $g('gBody').querySelectorAll('.corr-card').forEach(el => el.onclick = () => corrClick(el));
+      }
+
+      function corrClick(el) {
+        if (travado || el.classList.contains('done')) return;
+        const lado = el.dataset.lado;
+        if (lado === 'L') {
+          if (selL === el) { el.classList.remove('sel'); selL = null; return; }
+          if (selL) selL.classList.remove('sel');
+          selL = el; el.classList.add('sel');
+        } else {
+          if (selR === el) { el.classList.remove('sel'); selR = null; return; }
+          if (selR) selR.classList.remove('sel');
+          selR = el; el.classList.add('sel');
+        }
+        if (selL && selR) verificar();
+      }
+
+      function verificar() {
+        const iL = +selL.dataset.i, iR = +selR.dataset.i;
+        travado = true;
+        if (iL === iR) {
+          const l = selL, r = selR;
+          l.classList.remove('sel'); r.classList.remove('sel');
+          l.classList.add('done', 'flash'); r.classList.add('done', 'flash');
+          selL = null; selR = null;
+          combo++; maxCombo = Math.max(maxCombo, combo); ok++;
+          setTimeout(() => { l.classList.remove('flash'); r.classList.remove('flash'); }, 500);
+          renderHUD();
+          if (ok === total) return setTimeout(() => corrFim(true), 400);
+          travado = false;
+        } else {
+          const l = selL, r = selR;
+          l.classList.add('bad'); r.classList.add('bad');
+          erros.push({ termo: pares[iL][0], definicao: pares[iL][1] });
+          vidas--; combo = 0;
+          setTimeout(() => {
+            l.classList.remove('bad', 'sel'); r.classList.remove('bad', 'sel');
+            selL = null; selR = null; travado = false;
+            renderHUD();
+            if (vidas <= 0) corrFim(false);
+          }, 600);
+        }
+      }
+
+      function corrFim(venceu) {
+        clearInterval(G.timer);
+        const decorrido = Math.round((Date.now() - startTempo) / 1000);
+        let xp = 0;
+        if (venceu) {
+          const base = 20 + total * 2;
+          const bonusTempo = cfg.tempo ? Math.max(0, tempo * 2) : Math.max(0, (60 - decorrido));
+          const bonusCombo = maxCombo >= 3 ? maxCombo * 3 : 0;
+          xp = base + bonusTempo + bonusCombo;
+          const r = state.games.corrRec || (state.games.corrRec = {});
+          if (!r[modo] || ok > r[modo]) r[modo] = ok;
+        } else {
+          xp = ok * 2;
+        }
+        
+        const stats = state.games.stats || (state.games.stats = {});
+        stats.corresp = (stats.corresp || 0) + ok;
+        addXp(xp); save();
+
+        const emoji = venceu ? (modo === 'relampago' ? '⚡' : modo === 'maratona' ? '🏆' : '🎯') : '💔';
+        const titulo = venceu ? 'Rodada completa!' : 'Fim de jogo';
+        const sub = `${ok}/${total} pares · ${decorrido}s · combo máx x${maxCombo}${cfg.tempo ? ' · restaram ' + tempo + 's' : ''}`;
+        const reviewHtml = erros.length ? `<div class="corr-review"><h4>🔴 Revise estes pares (${erros.length})</h4>${erros.map(e => `<div class="rv"><b>${escapeHtml(e.termo)}</b> = <span>${escapeHtml(e.definicao)}</span></div>`).join('')}</div>` : '';
+        
+        const rec = state.games.corrRec || {};
+        const melhor = rec[modo] ? `🏆 Recorde neste modo: ${rec[modo]} pares` : '';
+
+        $g('gStat').textContent = '';
+        $g('gBody').innerHTML = `
+          ${reviewHtml}
+          <div class="result">
+            <div class="result-emoji">${emoji}</div>
+            <div class="result-title win">${titulo}</div>
+            <div class="result-sub">${sub}${xp > 0 ? ' +' + xp + ' XP' : ''}</div>
+            <div class="result-sub" style="font-size:12px; margin-bottom:24px">${melhor}</div>
+            <div class="result-actions">
+              <button class="btn btn-green btn-block" onclick="corrIniciar('${modo}')">JOGAR DE NOVO</button>
+              <button class="btn btn-outline btn-block" onclick="jCorresp()">ESCOLHER OUTRO MODO</button>
+            </div>
+          </div>
+        `;
+      }
+
+      if (cfg.tempo) {
+        G.timer = setInterval(() => {
+          tempo--; renderHUD();
+          if (tempo <= 0) { clearInterval(G.timer); corrFim(false); }
+        }, 1000);
+      }
+
+      render();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      load();
+      jCorresp();
+    });
+
+    window.corrIniciar = corrIniciar;
+    window.jCorresp = jCorresp;
+    window.fecharJogo = jCorresp;
+  </script>
+</body>
+</html>
